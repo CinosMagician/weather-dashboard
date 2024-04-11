@@ -61,7 +61,26 @@ function readWeatherData(){
         return response.json();
     }).then(data => {
         // the data will then be processed here
-        console.log(data);
+
+        const listData = data.list;
+
+        const dataToSave = listData[1];
+
+        const temp = dataToSave.main.temp;
+        const humidity = dataToSave.main.humidity;
+        const wind = dataToSave.wind.speed;
+
+
+        const nextDay1 = listData[9];
+        const nextDay2 = listData[17];
+        const nextDay3 = listData[25];
+        const nextDay4 = listData[33];
+        const nextDay5 = listData[39];
+
+
+        console.log(`The Temp is: ${temp}°C`);
+        console.log(`The Humidity is: ${humidity} %`);
+        console.log(`The Wind speed is: ${wind} kmph`);
     }).catch(error => {
         if (error instanceof TypeError && error.message.includes('API key')) {
             console.error('Invalid API key:', error);
