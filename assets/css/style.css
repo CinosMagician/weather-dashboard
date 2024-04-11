@@ -1,0 +1,29 @@
+*{
+    font-family: Raleway;
+}
+
+.flex-grid {
+    display: flex;
+}
+
+.flex-box1{
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-box2{
+    flex: auto;
+    margin-left: 50px;
+}
+
+header h1{
+    color: white;
+    background-image: linear-gradient(90deg, #00d4ff 0%, #090979 75%, #020024 100%);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#cityName {
+    margin-bottom: 15px;
+}
