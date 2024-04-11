@@ -10,6 +10,7 @@
     margin-left: 20px;
     display: flex;
     flex-direction: column;
+    max-width: 30%;
 }
 
 .flex-box2{
@@ -24,6 +25,31 @@ header h1{
     margin-bottom: 20px;
 }
 
-#cityName {
+#cityNameInput {
     margin-bottom: 15px;
+}
+
+#citySearch {
+    margin-bottom: 10px;
+}
+
+.spacer {
+    background-color: grey;
+    font-size: 2px;
+    color: grey;
+}
+
+#searchHistory {
+    margin-top: 5px;
+}
+
+.historyItem {
+    background-color: grey;
+    margin: 5px 0px;
+    text-decoration: solid;
+}
+
+.btn-group {
+    display: flex;
+    flex-direction: column;
 }
