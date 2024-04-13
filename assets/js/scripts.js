@@ -1,5 +1,6 @@
 const cityNameInput = document.getElementById('cityNameInput');
 const citySearch = document.getElementById('citySearch');
+const deleteHistoryBtn = document.getElementById('delHistory');
 const apiKey = '3497d479440187a42c3d57d843d1a6f2';
 const weatherData = [];
 let cityData = JSON.parse(localStorage.getItem("cities")) || {};
@@ -38,7 +39,6 @@ function readCityName(){
             console.error('There was a problem with the Fetch operation:', error);
           }
     });
-
 }
 
 function readWeatherData(cityFoundName){
@@ -78,7 +78,7 @@ function readWeatherData(cityFoundName){
                 daysList[`nextDay${dayIndex}`] = { temp, humidity, wind, icon, date };
             }
         });
-
+        renderHistoryButtons();
         console.log(daysList);
 
     }).catch(error => {
@@ -125,25 +125,40 @@ citySearch.addEventListener('click', readCityName);
 //     }};
 // }
 
-
-function createCityHistory() {
-//      add to the html under historyList '<button class="btn btn-default col historyItem">${cityName}</button>'
-// OPTIONAL: Limit how many show up and delete oldest entry.
-};
-
-function loadHistory() {
-//     first need to determin the index of saved item
-    // then use index to load in from storage
-    // eg. cities[loadedIndex]; *//
-    // loadCity(cities[loadIndex]);
-    console.log(`Loaded`)
-};
-
-
 // called when ever a new city is loaded or old city is clicked/loaded when already in the list *//
 function loadCity() {
     console.log(`History Loaded`);
 };
 
+deleteHistoryBtn.addEventListener('click', delHistory);
 
-// historyButton.addEventListener('click', readCityName);
+function delHistory() {
+    localStorage.setItem("cities", '{}');
+    cityData = {};
+    renderHistoryButtons();
+}
+
+function createHistoryButton(cityFoundName) {
+    const button = `<button type="button" class="btn btn-default col historyItem" id="${cityFoundName}">${cityFoundName}</button>`;
+    return button;
+}
+
+function renderHistoryButtons() {
+    const historySearch = document.getElementById('searchHistory');
+    let cityNumber = 0;
+    historySearch.innerHTML = '';
+
+    for (const cityName in cityData) {
+        if(cityNumber >= 10){
+            alert(`You cannot have more than 10 cities saved into recent history, please delete your history first`);
+            return;
+        }
+        const button = `<button type="button" class="btn btn-default col historyItem" id="${cityName}">${cityName}</button>`;
+        historySearch.insertAdjacentHTML('beforeend', button);
+        cityNumber++;
+    }
+};
+
+$(document).ready(function () {
+    renderHistoryButtons();
+});
