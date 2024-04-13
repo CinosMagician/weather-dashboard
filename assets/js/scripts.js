@@ -1,11 +1,9 @@
-let cityNameInput = document.getElementById('cityNameInput');
-let citySearch = document.getElementById('citySearch');
+const cityNameInput = document.getElementById('cityNameInput');
+const citySearch = document.getElementById('citySearch');
 const apiKey = '3497d479440187a42c3d57d843d1a6f2';
-let cityData = JSON.parse(localStorage.getItem("cities")) || [];;
-let cityDataIndex = JSON.parse(localStorage.getItem("cityDataIndex")) || 0;
-let cityName = JSON.parse(localStorage.getItem("cityName"));
-let lon = 0;
-let lat = 0;
+const weatherData = [];
+let cityData = JSON.parse(localStorage.getItem("cities")) || {};
+
 // The use of the apiKey variable is so that if the apiKey ever needed to change and a call is made multiple times it can be flexible
 
 
@@ -19,25 +17,19 @@ function readCityName(){
         }
         return response.json();
     }).then(data => {
-        // the data will then be processed here
 
-        for (let i = 0; i < cityDataIndex; i++){
-            if(cityData[i].cityName === cityName){
-                console.log(`Already exists on the list`)
-                return;
-            }
-        }
-        cityData.push({
-            cityName: cityName,
+        console.log(cityName);
+        console.log(data);
+        const cityFoundName = data[0].name;
+        cityData[cityFoundName] = {
             lat: data[0].lat,
             lon: data[0].lon
-        });
+        };
+        console.log(cityData);
         localStorage.setItem("cities", JSON.stringify(cityData));
+        console.log()
 
-        readWeatherData();
-
-        cityDataIndex++;
-        localStorage.setItem("cityDataIndex", JSON.stringify(cityDataIndex));
+        readWeatherData(cityFoundName);
 
     }).catch(error => {
         if (error instanceof TypeError && error.message.includes('API key')) {
@@ -49,9 +41,9 @@ function readCityName(){
 
 }
 
-function readWeatherData(){
-    const lon = cityData[cityDataIndex].lon;
-    const lat = cityData[cityDataIndex].lat;
+function readWeatherData(cityFoundName){
+    const lon = cityData[cityFoundName].lon;
+    const lat = cityData[cityFoundName].lat;
     const weatherApiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
 
     fetch(weatherApiUrl).then(response => {
@@ -60,27 +52,35 @@ function readWeatherData(){
         }
         return response.json();
     }).then(data => {
-        // the data will then be processed here
+        const daysList = {
+            todayData: {},
+            nextDay1: {},
+            nextDay2: {},
+            nextDay3: {},
+            nextDay4: {},
+            nextDay5: {}
+        };
+
 
         const listData = data.list;
 
-        const dataToSave = listData[1];
+        [0, 8, 16, 24, 32, 39].forEach((index, dayIndex) => {
+            const day = listData[index];
+            const date = dayjs.unix(day.dt).format('DD/MM/YYYY');
+            const temp = day.main.temp;
+            const humidity = day.main.humidity;
+            const wind = day.wind.speed;
+            const icon = day.weather[0].icon;
 
-        const temp = dataToSave.main.temp;
-        const humidity = dataToSave.main.humidity;
-        const wind = dataToSave.wind.speed;
+            if (dayIndex === 0) {
+                daysList.todayData = { temp, humidity, wind, icon, date };
+            } else {
+                daysList[`nextDay${dayIndex}`] = { temp, humidity, wind, icon, date };
+            }
+        });
 
+        console.log(daysList);
 
-        const nextDay1 = listData[9];
-        const nextDay2 = listData[17];
-        const nextDay3 = listData[25];
-        const nextDay4 = listData[33];
-        const nextDay5 = listData[39];
-
-
-        console.log(`The Temp is: ${temp}°C`);
-        console.log(`The Humidity is: ${humidity} %`);
-        console.log(`The Wind speed is: ${wind} kmph`);
     }).catch(error => {
         if (error instanceof TypeError && error.message.includes('API key')) {
             console.error('Invalid API key:', error);
@@ -91,3 +91,59 @@ function readWeatherData(){
 }
 
 citySearch.addEventListener('click', readCityName);
+
+
+
+// historyButton.addEventListener('click', loadHistory);
+
+// function extractWeatherData() {
+//    Insert Code Here *//
+// };
+
+// today = {
+//     temp: x,
+//     humid: y,
+//     wind: z,
+//     icon: icon
+// };
+// repeat for day1 - day5 *//
+
+// weatherDataCollection = [];
+
+// weatherDataCollection.push(today, day1, day2, day3, day4, day5);
+
+// cities[cityIndex].weatherData = weatherDataCollection;
+
+// save new data from cities to localStorage; *// 
+
+// inside of our first function:
+// for (cityIndex in cities){
+//     if(cities.name === cityName){
+//     function existCity(){
+//     // get from storage[cityIndex] data;
+//     return;
+//     }};
+// }
+
+
+function createCityHistory() {
+//      add to the html under historyList '<button class="btn btn-default col historyItem">${cityName}</button>'
+// OPTIONAL: Limit how many show up and delete oldest entry.
+};
+
+function loadHistory() {
+//     first need to determin the index of saved item
+    // then use index to load in from storage
+    // eg. cities[loadedIndex]; *//
+    // loadCity(cities[loadIndex]);
+    console.log(`Loaded`)
+};
+
+
+// called when ever a new city is loaded or old city is clicked/loaded when already in the list *//
+function loadCity() {
+    console.log(`History Loaded`);
+};
+
+
+// historyButton.addEventListener('click', readCityName);
