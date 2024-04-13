@@ -1,5 +1,5 @@
 *{
-    font-family: Raleway;
+    font-family: Raleway, serif;
 }
 
 .flex-grid {
@@ -56,4 +56,34 @@ header h1{
 
 .btn-danger {
     margin-top: 5px;
+}
+
+.todayWeather {
+    padding: 10px;
+    border-style: solid;
+    max-width: 76%;
+    background-color: lightgray;
+}
+
+#todayWeather h1 {
+    font-weight: bold;
+}
+
+#dayCastTitle {
+    margin: 5px;
+    font-weight: bold;
+}
+
+ #fiveCasts {
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start;
+}
+
+.upcomingForecast {
+    border-style: solid;
+    padding: 10px;
+    margin: 10px;
+    background-color: #090979;
+    color: white;
 }

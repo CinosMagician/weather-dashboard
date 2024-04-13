@@ -4,7 +4,6 @@ const deleteHistoryBtn = document.getElementById('delHistory');
 const apiKey = '3497d479440187a42c3d57d843d1a6f2';
 const weatherData = [];
 let cityData = JSON.parse(localStorage.getItem("cities")) || {};
-
 // The use of the apiKey variable is so that if the apiKey ever needed to change and a call is made multiple times it can be flexible
 
 
@@ -18,17 +17,12 @@ function readCityName(){
         }
         return response.json();
     }).then(data => {
-
-        console.log(cityName);
-        console.log(data);
         const cityFoundName = data[0].name;
         cityData[cityFoundName] = {
             lat: data[0].lat,
             lon: data[0].lon
         };
-        console.log(cityData);
         localStorage.setItem("cities", JSON.stringify(cityData));
-        console.log()
 
         readWeatherData(cityFoundName);
 
@@ -53,6 +47,7 @@ function readWeatherData(cityFoundName){
         return response.json();
     }).then(data => {
         const daysList = {
+            cityName: cityFoundName,
             todayData: {},
             nextDay1: {},
             nextDay2: {},
@@ -68,18 +63,19 @@ function readWeatherData(cityFoundName){
             const day = listData[index];
             const date = dayjs.unix(day.dt).format('DD/MM/YYYY');
             const temp = day.main.temp;
-            const humidity = day.main.humidity;
+            const humid = day.main.humidity;
             const wind = day.wind.speed;
             const icon = day.weather[0].icon;
 
             if (dayIndex === 0) {
-                daysList.todayData = { temp, humidity, wind, icon, date };
+                daysList.todayData = { temp, humid, wind, icon, date };
             } else {
-                daysList[`nextDay${dayIndex}`] = { temp, humidity, wind, icon, date };
+                daysList[`nextDay${dayIndex}`] = { temp, humid, wind, icon, date };
             }
         });
+
+        loadWeatherData(daysList);
         renderHistoryButtons();
-        console.log(daysList);
 
     }).catch(error => {
         if (error instanceof TypeError && error.message.includes('API key')) {
@@ -91,45 +87,6 @@ function readWeatherData(cityFoundName){
 }
 
 citySearch.addEventListener('click', readCityName);
-
-
-
-// historyButton.addEventListener('click', loadHistory);
-
-// function extractWeatherData() {
-//    Insert Code Here *//
-// };
-
-// today = {
-//     temp: x,
-//     humid: y,
-//     wind: z,
-//     icon: icon
-// };
-// repeat for day1 - day5 *//
-
-// weatherDataCollection = [];
-
-// weatherDataCollection.push(today, day1, day2, day3, day4, day5);
-
-// cities[cityIndex].weatherData = weatherDataCollection;
-
-// save new data from cities to localStorage; *// 
-
-// inside of our first function:
-// for (cityIndex in cities){
-//     if(cities.name === cityName){
-//     function existCity(){
-//     // get from storage[cityIndex] data;
-//     return;
-//     }};
-// }
-
-// called when ever a new city is loaded or old city is clicked/loaded when already in the list *//
-function loadCity() {
-    console.log(`History Loaded`);
-};
-
 deleteHistoryBtn.addEventListener('click', delHistory);
 
 function delHistory() {
@@ -153,10 +110,69 @@ function renderHistoryButtons() {
             alert(`You cannot have more than 10 cities saved into recent history, please delete your history first`);
             return;
         }
-        const button = `<button type="button" class="btn btn-default col historyItem" id="${cityName}">${cityName}</button>`;
-        historySearch.insertAdjacentHTML('beforeend', button);
+        const button = document.createElement('button');
+        button.textContent = cityName;
+        button.className = 'btn btn-default col historyItem';
+        button.id = cityName;
+        button.addEventListener('click', () => {
+            readWeatherData(cityName);
+        });
+        historySearch.appendChild(button);
         cityNumber++;
     }
+};
+
+function loadWeatherData(daysList) {
+        const weatherContainer = document.getElementById('weatherToday');
+        const forecasts = document.getElementById('dayCastTitle');
+        const upcomingDays = document.getElementById('fiveCasts');
+
+        forecasts.textContent = '5-Day Forecast:';
+
+        weatherContainer.innerHTML = `
+        <div class="todayWeather">
+            <h1>${daysList.cityName} ${daysList.todayData.date} <img src="https://openweathermap.org/img/wn/${daysList.todayData.icon}.png"></h1>
+            <h5>Temp: ${daysList.todayData.temp}<span>&#176;</span>C</h3>
+            <h5>Wind: ${daysList.todayData.wind} KMPH</h3>
+            <h5>Humidity: ${daysList.todayData.humid} %</h3>
+        </div>`
+
+        upcomingDays.innerHTML = `
+        <div class="upcomingForecast" id="day1">
+        <h2>${daysList.nextDay1.date}</h2>
+            <img src="https://openweathermap.org/img/wn/${daysList.nextDay1.icon}.png">
+            <p>Temp: ${daysList.nextDay1.temp}<span>&#176;</span>C</p>
+            <p>Wind: ${daysList.nextDay1.wind} KMPH</p>
+            <p>Humidity: ${daysList.nextDay1.humid} %</p>
+        </div>
+        <div class="upcomingForecast" id="day2">
+            <h2>${daysList.nextDay2.date}</h2>
+            <img src="https://openweathermap.org/img/wn/${daysList.nextDay2.icon}.png">
+            <p>Temp: ${daysList.nextDay2.temp}<span>&#176;</span>C</p>
+            <p>Wind: ${daysList.nextDay2.wind} KMPH</p>
+            <p>Humidity: ${daysList.nextDay2.humid} %</p>
+        </div>
+        <div class="upcomingForecast" id="day3">
+            <h2>${daysList.nextDay3.date}</h2>
+            <img src="https://openweathermap.org/img/wn/${daysList.nextDay3.icon}.png">
+            <p>Temp: ${daysList.nextDay3.temp}<span>&#176;</span>C</p>
+            <p>Wind: ${daysList.nextDay3.wind} KMPH</p>
+            <p>Humidity: ${daysList.nextDay3.humid} %</p>
+        </div>
+        <div class="upcomingForecast" id="day4">
+            <h2>${daysList.nextDay4.date}</h2>
+            <img src="https://openweathermap.org/img/wn/${daysList.nextDay4.icon}.png">
+            <p>Temp: ${daysList.nextDay4.temp}<span>&#176;</span>C</p>
+            <p>Wind: ${daysList.nextDay4.wind} KMPH</p>
+            <p>Humidity: ${daysList.nextDay4.humid} %</p>
+        </div>
+        <div class="upcomingForecast" id="day5">
+            <h2>${daysList.nextDay5.date}</h2>
+            <img src="https://openweathermap.org/img/wn/${daysList.nextDay5.icon}.png">
+            <p>Temp: ${daysList.nextDay5.temp}<span>&#176;</span>C</p>
+            <p>Wind: ${daysList.nextDay5.wind} KMPH</p>
+            <p>Humidity: ${daysList.nextDay5.humid} %</p>
+        </div>`
 };
 
 $(document).ready(function () {
