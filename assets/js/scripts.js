@@ -1,6 +1,8 @@
 const cityNameInput = document.getElementById('cityNameInput');
 const citySearch = document.getElementById('citySearch');
 const deleteHistoryBtn = document.getElementById('delHistory');
+citySearch.addEventListener('click', readCityName);
+deleteHistoryBtn.addEventListener('click', delHistory);
 const apiKey = '3497d479440187a42c3d57d843d1a6f2';
 const weatherData = [];
 let cityData = JSON.parse(localStorage.getItem("cities")) || {};
@@ -9,7 +11,7 @@ let cityData = JSON.parse(localStorage.getItem("cities")) || {};
 
 function readCityName(){
     const cityName = cityNameInput.value;
-    const locationApiUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
+    const locationApiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
 
     fetch(locationApiUrl).then(response => {
         if (!response.ok) {
@@ -86,8 +88,7 @@ function readWeatherData(cityFoundName){
     });
 }
 
-citySearch.addEventListener('click', readCityName);
-deleteHistoryBtn.addEventListener('click', delHistory);
+
 
 function delHistory() {
     localStorage.setItem("cities", '{}');
@@ -137,42 +138,20 @@ function loadWeatherData(daysList) {
             <h5>Humidity: ${daysList.todayData.humid} %</h3>
         </div>`
 
-        upcomingDays.innerHTML = `
-        <div class="upcomingForecast" id="day1">
-        <h2>${daysList.nextDay1.date}</h2>
-            <img src="https://openweathermap.org/img/wn/${daysList.nextDay1.icon}.png">
-            <p>Temp: ${daysList.nextDay1.temp}<span>&#176;</span>C</p>
-            <p>Wind: ${daysList.nextDay1.wind} KMPH</p>
-            <p>Humidity: ${daysList.nextDay1.humid} %</p>
-        </div>
-        <div class="upcomingForecast" id="day2">
-            <h2>${daysList.nextDay2.date}</h2>
-            <img src="https://openweathermap.org/img/wn/${daysList.nextDay2.icon}.png">
-            <p>Temp: ${daysList.nextDay2.temp}<span>&#176;</span>C</p>
-            <p>Wind: ${daysList.nextDay2.wind} KMPH</p>
-            <p>Humidity: ${daysList.nextDay2.humid} %</p>
-        </div>
-        <div class="upcomingForecast" id="day3">
-            <h2>${daysList.nextDay3.date}</h2>
-            <img src="https://openweathermap.org/img/wn/${daysList.nextDay3.icon}.png">
-            <p>Temp: ${daysList.nextDay3.temp}<span>&#176;</span>C</p>
-            <p>Wind: ${daysList.nextDay3.wind} KMPH</p>
-            <p>Humidity: ${daysList.nextDay3.humid} %</p>
-        </div>
-        <div class="upcomingForecast" id="day4">
-            <h2>${daysList.nextDay4.date}</h2>
-            <img src="https://openweathermap.org/img/wn/${daysList.nextDay4.icon}.png">
-            <p>Temp: ${daysList.nextDay4.temp}<span>&#176;</span>C</p>
-            <p>Wind: ${daysList.nextDay4.wind} KMPH</p>
-            <p>Humidity: ${daysList.nextDay4.humid} %</p>
-        </div>
-        <div class="upcomingForecast" id="day5">
-            <h2>${daysList.nextDay5.date}</h2>
-            <img src="https://openweathermap.org/img/wn/${daysList.nextDay5.icon}.png">
-            <p>Temp: ${daysList.nextDay5.temp}<span>&#176;</span>C</p>
-            <p>Wind: ${daysList.nextDay5.wind} KMPH</p>
-            <p>Humidity: ${daysList.nextDay5.humid} %</p>
-        </div>`
+        upcomingDays.innerHTML = '';
+
+        for (let i = 1; i <= 5; i++) {
+            const dayData = daysList[`nextDay${i}`];
+            const dayHtml = `
+                <div class="upcomingForecast" id="day${i}">
+                    <h2>${dayData.date}</h2>
+                    <img src="https://openweathermap.org/img/wn/${dayData.icon}.png">
+                    <p>Temp: ${dayData.temp}<span>&#176;</span>C</p>
+                    <p>Wind: ${dayData.wind} KMPH</p>
+                    <p>Humidity: ${dayData.humid} %</p>
+                </div>`;
+            upcomingDays.innerHTML += dayHtml;
+        }
 };
 
 $(document).ready(function () {
