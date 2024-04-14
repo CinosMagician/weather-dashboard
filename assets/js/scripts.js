@@ -5,9 +5,9 @@ citySearch.addEventListener('click', readCityName);
 deleteHistoryBtn.addEventListener('click', delHistory);
 const apiKey = '3497d479440187a42c3d57d843d1a6f2';
 const weatherData = [];
+let cityNumber = 0;
 let cityData = JSON.parse(localStorage.getItem("cities")) || {};
 // The use of the apiKey variable is so that if the apiKey ever needed to change and a call is made multiple times it can be flexible
-
 
 function readCityName(){
     const cityName = cityNameInput.value;
@@ -25,13 +25,16 @@ function readCityName(){
             lon: data[0].lon
         };
         localStorage.setItem("cities", JSON.stringify(cityData));
-
+        if(cityNumber >= 10){
+            alert(`You cannot have more than 10 cities saved into recent history, please delete your history first`);
+        }
         readWeatherData(cityFoundName);
 
     }).catch(error => {
         if (error instanceof TypeError && error.message.includes('API key')) {
             console.error('Invalid API key:', error);
           } else {
+            alert(`Could not find a city with the name of ${cityName}, please try again.`)
             console.error('There was a problem with the Fetch operation:', error);
           }
     });
@@ -88,27 +91,20 @@ function readWeatherData(cityFoundName){
     });
 }
 
-
-
 function delHistory() {
     localStorage.setItem("cities", '{}');
     cityData = {};
     renderHistoryButtons();
 }
 
-function createHistoryButton(cityFoundName) {
-    const button = `<button type="button" class="btn btn-default col historyItem" id="${cityFoundName}">${cityFoundName}</button>`;
-    return button;
-}
-
 function renderHistoryButtons() {
     const historySearch = document.getElementById('searchHistory');
-    let cityNumber = 0;
+    cityNumber = 0;
     historySearch.innerHTML = '';
 
     for (const cityName in cityData) {
         if(cityNumber >= 10){
-            alert(`You cannot have more than 10 cities saved into recent history, please delete your history first`);
+
             return;
         }
         const button = document.createElement('button');
