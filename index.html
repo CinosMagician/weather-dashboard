@@ -4,37 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
+    <!-- Here we add the styling for our page, including the stylesheet for bootstrap, our own stylesheet and our font from google. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/css/style.css" />
+    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
+
 <body>
+
     <header>
+        <!-- The title -->
         <h1>Weather Dashboard</h1>
     </header>
     
+    <!-- The section is the overall flex container -->
     <section class="flex-grid">
+
+        <!-- This is our first flexbox that houses all of our Search and History Items -->
         <div class="flex-box1">
+        
             <h2>Search for a City:</h2>
+        
             <input type="text" id="cityNameInput" name="city" placeholder="Enter a city name...">
+        
             <button type="submit" class="btn btn-primary" id="citySearch">Search</button>
+        
             <div class="spacer">.</div>
+        
             <section>
+                <!-- We place the delete button in a different section so that we wont have to keep reloading it each time we generate the history buttons. -->
                 <div class="btn-group" role="group" aria-label="Search history"  id="searchHistory"></div>
                 <button type="button" class="btn btn-danger col" id="delHistory">Delete Recently Searched</button>
             </section>
+        
         </div>
 
+        <!-- This is our second flexbox that houses our Weather Data for today and the next 5 days when loaded -->
         <div class="flex-box2">
-            <section id="weatherToday"></section>
-            <h2 id="dayCastTitle"></h2>
-            <section id="fiveCasts"></section>
+
+            <section id="weatherToday">
+                <!-- This is where our Weather for today for the city we search will go, loaded in by the scripts.js file. -->
+            </section>
+
+            <h2 id="dayCastTitle">
+                <!-- This is where our Next 5 days text will go, loaded in by the scripts.js file. -->
+            </h2>
+            
+            <section id="fiveCasts">
+                <!-- This is where our Weather for the next 5 days for the city we search will go, loaded in by the scripts.js file. -->
+            </section>
+
         </div>
 
     </section>
 
+    <!-- Here are our scripts that we load in to use. including dayjs, bootstrap, jquery and our own script we wrote. -->
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script>dayjs().format()</script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -42,4 +69,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="./assets/js/scripts.js"></script> 
 </body>
+
 </html>
